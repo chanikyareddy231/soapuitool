@@ -27,7 +27,7 @@ File f1=new File("C:\\batch251\\soapuiworkspace\\weatherdata.txt");
 FileReader fr=new FileReader(f1);
 BufferedReader br=new BufferedReader(fr);
 //Create a new file or update an existing file for date writing
-File f2=new File("C:\\batch251\\soapuiworkspace\\weatherresult.txt");
+File f2=new File("C:\\batch251\\soapuiworkspace\\weatheresult.txt");
 FileWriter fw=new FileWriter(f2);
 BufferedWriter bw=new BufferedWriter(fw); 
 //Parameterized request format
