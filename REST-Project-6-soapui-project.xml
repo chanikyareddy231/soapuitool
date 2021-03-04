@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="1d849860-e7f9-4a70-869e-f1c0c2b5b02d" activeEnvironment="Default" name="REST Project 6" soapui-version="5.6.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="73142702-eab3-4c20-aef0-39aa6f8a28c1" wadlVersion="http://wadl.dev.java.net/2009/02" name="https://api.weatherapi.com" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>https://api.weatherapi.com</con:endpoint></con:endpoints><con:resource name="Current.xml" path="/v1/current.xml" id="769701e9-d019-496c-a678-5f5f828e0285"><con:settings/><con:parameters><con:parameter><con:name>key</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter><con:parameter><con:name>q</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter></con:parameters><con:method name="Current.xml 1" id="98550873-7c2b-47de-bbfc-6feab9bc1a06" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>text/xml</con:mediaType><con:status>200</con:status><con:params/><con:element>root</con:element></con:representation><con:request name="Request 1" id="da8f8bff-5602-4781-a1f3-e8a625883f17" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://api.weatherapi.com</con:endpoint><con:request/><con:originalUri>https://api.weatherapi.com/v1/current.xml</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="q" value="Hyderabad"/>
+  <con:entry key="key" value="e9c3b0195be341c795281747202311"/>
+</con:parameters><con:parameterOrder><con:entry>key</con:entry><con:entry>q</con:entry></con:parameterOrder></con:request></con:method></con:resource></con:interface><con:testSuite id="c010f0c8-6903-436c-8762-b5210fe65b88" name="TestSuite 1"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="51c9e7ba-ee17-4489-ae6f-90c62a3cfa90" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="TestCase 1" searchProperties="true"><con:settings/><con:testStep type="restrequest" name="Request1" id="83a85f16-f40a-47b6-9a0a-105ef7664cd1"><con:settings/><con:config service="https://api.weatherapi.com" resourcePath="/v1/current.xml" methodName="Current.xml 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Request1" id="da8f8bff-5602-4781-a1f3-e8a625883f17" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://api.weatherapi.com</con:endpoint><con:request/><con:originalUri>https://api.weatherapi.com/v1/current.xml</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="q" value="bengaluru"/>
+  <con:entry key="key" value="e9c3b0195be341c795281747202311"/>
+</con:parameters><con:parameterOrder><con:entry>key</con:entry><con:entry>q</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script" id="bf751007-eb91-4417-b34c-b5f729b08df7"><con:settings/><con:config><script>import com.eviware.soapui.support.GroovyUtils
+ 
+//parameterize Request,submit that request, and get XML response
+def step=testRunner.testCase.getTestStepByName("Request1");
+step.setPropertyValue("key","e9c3b0195be341c795281747202311");
+step.setPropertyValue("q","Mumbai");
+def res=testRunner.runTestStepByName("Request1").getResponse();
+def xmlres=res.getContentAsString();
+log.info(xmlres);
+//Analyze Xml respose
+GroovyUtils gu=new GroovyUtils(context);
+def holder=gu.getXmlHolder(xmlres);
+def c=holder.getNodeValue("//*:temp_c");
+log.info(c);
+def f=holder.getNodeValue("//*:temp_f");
+log.info(f);</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script1" id="63bbea39-dd84-4316-b1f2-31d0c998e714"><con:settings/><con:config><script>import com.eviware.soapui.support.GroovyUtils
+
+//Open existing fie in read mode
+File f1=new File("C:\\batch251\\soapuiworkspace\\weatherdata.txt");
+FileReader fr=new FileReader(f1);
+BufferedReader br=new BufferedReader(fr);
+//Create a new file or update an existing file for date writing
+File f2=new File("C:\\batch251\\soapuiworkspace\\weatherresult.txt");
+FileWriter fw=new FileWriter(f2);
+BufferedWriter bw=new BufferedWriter(fw); 
+//Parameterized request format
+String x;
+while((x=br.readLine())!=null)
+{
+	String[] p=x.split(",");
+	//parameterize Request,submit that request, and get XML response
+	def step=testRunner.testCase.getTestStepByName("Request1");
+	step.setPropertyValue("key",p[0]);
+	step.setPropertyValue("q",p[1]);
+	def res=testRunner.runTestStepByName("Request1").getResponse();
+	def xmlres=res.getContentAsString();
+	try
+	{
+	//Analyze Xml respose
+	GroovyUtils gu=new GroovyUtils(context);
+	def holder=gu.getXmlHolder(xmlres);
+	def c=holder.getNodeValue("//*:temp_c");
+	def f=holder.getNodeValue("//*:temp_f");
+	bw.write(c+"&lt;---->");
+	bw.write(f);
+	bw.newLine();
+	}
+	catch(Exception ex)
+	{
+		bw.write(p[1]+" city name is not found in service DB");
+		bw.newLine();
+	}
+}
+bw.close();
+br.close();
+fr.close();
+fw.close();
+</script></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script2" id="731c830f-9e58-4ace-89e7-c1919d582f6a"><con:settings/><con:config><script>import com.eviware.soapui.support.GroovyUtils
+
+//use POI-OOXML 3.9 because it has xmlbeans 2.3.0
+//As of SOAPUI Tool support xmlbeans 2.3.0
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+//Open file in read mode
+File f=new File("C:\\batch251\\soapuiworkspace\\Book2.xlsx");
+FileInputStream fi=new FileInputStream(f);
+Workbook wb=WorkbookFactory.create(fi);
+Sheet sh=wb.getSheet("Sheet1");
+int nour=sh.getPhysicalNumberOfRows();
+//Create headings for result columns
+sh.getRow(0).createCell(2).setCellValue("temp_c");
+sh.getRow(0).createCell(3).setCellValue("temp_f");
+//Skip 1st row(index=0) because it has names to columns
+//Start from 2nd row(index=1)
+for(int i=1;i&lt;nour;i++)
+{
+	DataFormatter df=new DataFormatter();
+	String x=df.formatCellValue(sh.getRow(i).getCell(0));
+	String y=df.formatCellValue(sh.getRow(i).getCell(1));
+	//parameterize Request,submit that request, and get XML response
+	def step=testRunner.testCase.getTestStepByName("Request1");
+	step.setPropertyValue("key",x);
+	step.setPropertyValue("q",y);
+	def res=testRunner.runTestStepByName("Request1").getResponse();
+	def xmlres=res.getContentAsString();
+	try
+	{
+	//Analyze Xml respose
+	GroovyUtils gu=new GroovyUtils(context);
+	def holder=gu.getXmlHolder(xmlres);
+	def c=holder.getNodeValue("//*:temp_c");
+	def d=holder.getNodeValue("//*:temp_f");
+	sh.getRow(i).createCell(2).setCellValue(c);
+	sh.getRow(i).createCell(3).setCellValue(d);
+	}
+	catch(Exception ex)
+	{
+		sh.getRow(i).createCell(2).setCellValue("not found in service DB");
+		sh.getRow(i).createCell(3).setCellValue("not found in service DB");
+	}
+}
+	//save excel file changes
+	sh.autoSizeColumn(2);
+	sh.autoSizeColumn(3);
+	def fo=new FileOutputStream(f);
+	wb.write(fo);
+	fo.close();
+	fi.close();</script></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
